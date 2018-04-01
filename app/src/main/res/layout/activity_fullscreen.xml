@@ -50,7 +50,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/manage_started_service_title" />
+                android:text="@string/manage_started_service_title"
+                android:textColor="@color/colorBlueDark" />
+
+            <Button
+                android:id="@+id/fullscreen_manage_bound_service_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/manage_bound_service_title"
+                android:textColor="@color/colorGreenDark" />
+
+            <Button
+                android:id="@+id/fullscreen_manage_scheduled_service_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/manage_scheduled_service_title"
+                android:textColor="@color/colorOrangeDark" />
         </LinearLayout>
 
         <LinearLayout
