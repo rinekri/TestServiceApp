@@ -1,6 +1,7 @@
 package ru.rinekri.servicetest
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
@@ -56,6 +57,7 @@ class FullscreenActivity : AppCompatActivity() {
     fullscreen_started_rx_service_controls.visibility = View.VISIBLE
     fullscreen_started_handler_service_controls.visibility = View.VISIBLE
     fullscreen_kill_process_controls.visibility = View.VISIBLE
+    fullscreen_started_foreground_wrong_service_controls.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
   /**
@@ -77,6 +79,7 @@ class FullscreenActivity : AppCompatActivity() {
     initContentViews()
     initRxServiceViews()
     initHandlerServiceViews()
+    initForegroundServiceViews()
     initKillProcessViews()
   }
 
@@ -123,6 +126,24 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
 
+  private fun initForegroundServiceViews() {
+    val rxServiceIntent = Intent(this, TimerRxService::class.java)
+    fullscreen_start_foreground_wrong_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_start_foreground_wrong_service_button.setOnClickListener {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(rxServiceIntent)
+      } else {
+        startService(rxServiceIntent)
+      }
+    }
+    fullscreen_stop_foreground_wrong_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
+      stopService(rxServiceIntent).also {
+        Snackbar.make(fullscreen_container, "Foreground rx service was stopped: $it", LENGTH_SHORT).show()
+      }
+    }
+  }
+
   private fun initKillProcessViews() {
     fullscreen_kill_process_button.setOnTouchListener(delayHideTouchListener)
     fullscreen_kill_process_button.setOnClickListener {
@@ -144,6 +165,7 @@ class FullscreenActivity : AppCompatActivity() {
     fullscreen_started_rx_service_controls.visibility = View.GONE
     fullscreen_started_handler_service_controls.visibility = View.GONE
     fullscreen_kill_process_controls.visibility = View.GONE
+    fullscreen_started_foreground_wrong_service_controls.visibility = View.GONE
     activityIsVisible = false
 
     // Schedule a runnable to remove the status and navigation bar after a delay

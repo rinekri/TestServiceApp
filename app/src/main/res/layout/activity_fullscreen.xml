@@ -17,7 +17,7 @@
         android:keepScreenOn="true"
         android:text="@string/dummy_content"
         android:textColor="#33b5e5"
-        android:textSize="50sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <!-- This FrameLayout insets its children based on system windows using
@@ -87,6 +87,34 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/stop_handler_service_button" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fullscreen_started_foreground_wrong_service_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <Button
+                android:id="@+id/fullscreen_start_foreground_wrong_service_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/start_foreground_wrong_service_button" />
+
+
+            <Button
+                android:id="@+id/fullscreen_stop_foreground_wrong_service_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stop_foreground_wrong_service_button" />
         </LinearLayout>
 
         <LinearLayout
