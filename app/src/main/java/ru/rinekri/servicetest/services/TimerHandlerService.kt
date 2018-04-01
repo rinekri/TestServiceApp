@@ -1,4 +1,4 @@
-package ru.rinekri.servicetest
+package ru.rinekri.servicetest.services
 
 import android.app.IntentService
 import android.content.Intent
@@ -18,7 +18,7 @@ class TimerHandlerService : IntentService(TAG) {
     super.onCreate()
     Log.e(TAG, "onCreate")
     uiHandler = Handler()
-    "$TAG: onCreate".showToast()
+    "${TAG}: onCreate".showToast()
   }
 
   // NOTE: Нужно очищать ресурсы: потоки, ресурсы и т.д.
@@ -26,7 +26,7 @@ class TimerHandlerService : IntentService(TAG) {
   override fun onDestroy() {
     super.onDestroy()
     Log.e(TAG, "onDestroy")
-    "$TAG: onDestroy".showToast()
+    "${TAG}: onDestroy".showToast()
   }
 
   override fun onHandleIntent(intent: Intent) {
@@ -35,9 +35,9 @@ class TimerHandlerService : IntentService(TAG) {
     var second = 0
     while (true) {
       if (second == 0) {
-        "$TAG: invoked"
+        "${TAG}: invoked"
       } else {
-        "$TAG: $second seconds elapsed"
+        "${TAG}: $second seconds elapsed"
       }.also {
         it.showToast()
         Log.e(TAG, it)

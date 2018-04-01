@@ -22,11 +22,11 @@
         </activity>
 
         <service
-            android:name=".TimerRxService"
+            android:name=".services.TimerRxService"
             android:exported="false" />
 
         <service
-            android:name=".TimerHandlerService"
+            android:name=".services.TimerHandlerService"
             android:exported="false" />
     </application>
 

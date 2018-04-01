@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
+import ru.rinekri.servicetest.services.TimerHandlerService
+import ru.rinekri.servicetest.services.TimerRxService
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -67,9 +69,20 @@ class FullscreenActivity : AppCompatActivity() {
     setContentView(R.layout.activity_fullscreen)
     initContentViews()
     initManageStartedServicesViews()
+    initManageBoundServicesViews()
+    initManageScheduledServicesViews()
     initKillProcessViews()
   }
 
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
+    // Trigger the initial hide() shortly after the activity has been
+    // created, to briefly hint to the user that UI controls
+    // are available.
+    delayedHide(100)
+  }
+
+  //region Services
   private fun initManageStartedServicesViews() {
     fullscreen_manage_started_service_button.setOnClickListener {
 
@@ -122,13 +135,18 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
 
-  override fun onPostCreate(savedInstanceState: Bundle?) {
-    super.onPostCreate(savedInstanceState)
-    // Trigger the initial hide() shortly after the activity has been
-    // created, to briefly hint to the user that UI controls
-    // are available.
-    delayedHide(100)
+  private fun initManageBoundServicesViews() {
+    fullscreen_manage_scheduled_service_button.setOnClickListener {
+      Snackbar.make(fullscreen_container, "TODO: Show scheduled services manager", LENGTH_LONG).show()
+    }
   }
+
+  private fun initManageScheduledServicesViews() {
+    fullscreen_manage_bound_service_button.setOnClickListener {
+      Snackbar.make(fullscreen_container, "TODO: Show bound services manager", LENGTH_LONG).show()
+    }
+  }
+  //endregion
 
   private fun initContentViews() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -142,6 +160,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
 
+  //region Fullscreen
   private fun toggleControls() {
     if (activityIsVisible) {
       hide()
@@ -181,4 +200,5 @@ class FullscreenActivity : AppCompatActivity() {
     hideHandler.removeCallbacks(hideRunnable)
     hideHandler.postDelayed(hideRunnable, delayMillis)
   }
+  //endregion
 }

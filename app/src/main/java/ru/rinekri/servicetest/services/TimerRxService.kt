@@ -1,4 +1,4 @@
-package ru.rinekri.servicetest
+package ru.rinekri.servicetest.services
 
 import android.app.Service
 import android.content.Intent
@@ -19,14 +19,14 @@ class TimerRxService : Service() {
 
   override fun onCreate() {
     Log.e(TAG, "onCreate")
-    "$TAG: created".showToast()
+    "${TAG}: created".showToast()
   }
 
   //NOTE: Нужно очищать ресурсы: потоки, ресурсы и т.д.
   override fun onDestroy() {
     compositeDisposable.clear()
     Log.e(TAG, "onDestroy")
-    "$TAG: destroyed".showToast()
+    "${TAG}: destroyed".showToast()
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -36,9 +36,9 @@ class TimerRxService : Service() {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { second ->
         val msg = if (second == 0L) {
-          "$TAG $startId: invoked"
+          "${TAG} $startId: invoked"
         } else {
-          "$TAG $startId: $second seconds elapsed"
+          "${TAG} $startId: $second seconds elapsed"
         }
         msg.showToast()
         Log.e(TAG, msg)
