@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 
 class TimerHandlerService : IntentService(TAG) {
   companion object {
@@ -33,7 +34,7 @@ class TimerHandlerService : IntentService(TAG) {
 
     var second = 0
     while (true) {
-      val msg = if (second == 0) {
+      if (second == 0) {
         "$TAG: invoked"
       } else {
         "$TAG: $second seconds elapsed"
@@ -46,7 +47,7 @@ class TimerHandlerService : IntentService(TAG) {
     }
   }
 
-  private fun String.showToast(length: Int = Toast.LENGTH_SHORT) {
+  private fun String.showToast(length: Int = LENGTH_SHORT) {
     uiHandler?.post { Toast.makeText(applicationContext, this, length).show() }
   }
 }
