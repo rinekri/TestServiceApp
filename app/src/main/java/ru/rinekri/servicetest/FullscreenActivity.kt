@@ -3,6 +3,7 @@ package ru.rinekri.servicetest
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Process
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.support.v7.app.AppCompatActivity
@@ -25,7 +26,7 @@ class FullscreenActivity : AppCompatActivity() {
      * If [AUTO_HIDE] is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
      */
-    private const val AUTO_HIDE_DELAY_MILLIS = 3000
+    private const val AUTO_HIDE_DELAY_MILLIS = 3000L
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -52,7 +53,9 @@ class FullscreenActivity : AppCompatActivity() {
   private val showPart2Runnable = Runnable {
     // Delayed display of UI elements
     supportActionBar?.show()
-    fullscreen_content_controls.visibility = View.VISIBLE
+    fullscreen_started_rx_service_controls.visibility = View.VISIBLE
+    fullscreen_started_handler_service_controls.visibility = View.VISIBLE
+    fullscreen_kill_process_controls.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
   /**
@@ -71,39 +74,63 @@ class FullscreenActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     setContentView(R.layout.activity_fullscreen)
-    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-    activityIsVisible = true
-
-    // Set up the user interaction to manually show or hide the system UI.
-    fullscreen_content.setOnClickListener { toggle() }
-
-    val timerServiceIntent = Intent(this, TimerRxService::class.java)
-    // Upon interacting with UI controls, delay any scheduled hide()
-    // operations to prevent the jarring behavior of controls going away
-    // while interacting with the UI.
-    start_timer_button.setOnTouchListener(delayHideTouchListener)
-    start_timer_button.setOnClickListener {
-      startService(timerServiceIntent)
-    }
-    stop_timer_button.setOnTouchListener(delayHideTouchListener)
-    stop_timer_button.setOnClickListener {
-      stopService(timerServiceIntent).also {
-        Snackbar.make(fullscreen_container, "Service was stopped: $it", LENGTH_SHORT).show()
-      }
-    }
+    initContentViews()
+    initRxServiceViews()
+    initHandlerServiceViews()
+    initKillProcessViews()
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
-
     // Trigger the initial hide() shortly after the activity has been
     // created, to briefly hint to the user that UI controls
     // are available.
     delayedHide(100)
   }
 
-  private fun toggle() {
+  private fun initContentViews() {
+    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    activityIsVisible = true
+    fullscreen_content.setOnClickListener { toggleControls() }
+  }
+
+  private fun initRxServiceViews() {
+    val rxServiceIntent = Intent(this, TimerRxService::class.java)
+    fullscreen_start_rx_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_start_rx_service_button.setOnClickListener {
+      startService(rxServiceIntent)
+    }
+    fullscreen_stop_rx_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_stop_rx_service_button.setOnClickListener {
+      stopService(rxServiceIntent).also {
+        Snackbar.make(fullscreen_container, "Rx service was stopped: $it", LENGTH_SHORT).show()
+      }
+    }
+  }
+
+  private fun initHandlerServiceViews() {
+    val handlerServiceIntent = Intent(this, TimerHandlerService::class.java)
+    fullscreen_start_handler_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_start_handler_service_button.setOnClickListener {
+      startService(handlerServiceIntent)
+    }
+    fullscreen_stop_handler_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_stop_handler_service_button.setOnClickListener {
+      stopService(handlerServiceIntent).also {
+        Snackbar.make(fullscreen_container, "Handler service was stopped: $it", LENGTH_SHORT).show()
+      }
+    }
+  }
+
+
+  private fun initKillProcessViews() {
+    fullscreen_kill_process_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_kill_process_button.setOnClickListener {
+      Process.killProcess(Process.myPid())
+    }
+  }
+
+  private fun toggleControls() {
     if (activityIsVisible) {
       hide()
     } else {
@@ -114,7 +141,9 @@ class FullscreenActivity : AppCompatActivity() {
   private fun hide() {
     // Hide UI first
     supportActionBar?.hide()
-    fullscreen_content_controls.visibility = View.GONE
+    fullscreen_started_rx_service_controls.visibility = View.GONE
+    fullscreen_started_handler_service_controls.visibility = View.GONE
+    fullscreen_kill_process_controls.visibility = View.GONE
     activityIsVisible = false
 
     // Schedule a runnable to remove the status and navigation bar after a delay
@@ -129,7 +158,6 @@ class FullscreenActivity : AppCompatActivity() {
       View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     activityIsVisible = true
 
-    // Schedule a runnable to display UI elements after a delay
     hideHandler.removeCallbacks(hidePart2Runnable)
     hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY)
   }
@@ -138,8 +166,8 @@ class FullscreenActivity : AppCompatActivity() {
    * Schedules a call to hide() in [delayMillis], canceling any
    * previously scheduled calls.
    */
-  private fun delayedHide(delayMillis: Int) {
+  private fun delayedHide(delayMillis: Long) {
     hideHandler.removeCallbacks(hideRunnable)
-    hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
+    hideHandler.postDelayed(hideRunnable, delayMillis)
   }
 }
