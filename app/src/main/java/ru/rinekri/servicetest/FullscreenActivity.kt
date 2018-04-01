@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Process
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
-import android.support.design.widget.Snackbar.LENGTH_SHORT
+import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_fullscreen.*
@@ -60,17 +60,6 @@ class FullscreenActivity : AppCompatActivity() {
     fullscreen_kill_process_controls.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
-  /**
-   * Touch listener to use for in-layout UI controls to delay hiding the
-   * system UI. This is to prevent the jarring behavior of controls going away
-   * while interacting with activity UI.
-   */
-  private val delayHideTouchListener = View.OnTouchListener { _, _ ->
-    if (AUTO_HIDE) {
-      delayedHide(AUTO_HIDE_DELAY_MILLIS)
-    }
-    false
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -82,29 +71,39 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
   private fun initManageStartedServicesViews() {
-    fullscreen_manage_started_service_button.setOnTouchListener(delayHideTouchListener)
     fullscreen_manage_started_service_button.setOnClickListener {
-      BottomSheetDialog(this).apply {
-        val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply {
+
+      BottomSheetDialog(this).apply dialog@{
+
+        val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
 
           val rxServiceIntent = Intent(this@FullscreenActivity, TimerRxService::class.java)
-          fullscreen_start_rx_service_button.setOnClickListener { startService(rxServiceIntent) }
+          fullscreen_start_rx_service_button.setOnClickListener {
+            this@dialog.dismiss()
+            startService(rxServiceIntent)
+          }
           fullscreen_stop_rx_service_button.setOnClickListener {
             stopService(rxServiceIntent).also {
-              Snackbar.make(this, "Rx service was stopped: $it", LENGTH_SHORT).show()
+              this@dialog.dismiss()
+              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Rx service was stopped: $it", LENGTH_LONG).show()
             }
           }
 
           val handlerServiceIntent = Intent(this@FullscreenActivity, TimerHandlerService::class.java)
 
-          fullscreen_start_handler_service_button.setOnClickListener { startService(handlerServiceIntent) }
+          fullscreen_start_handler_service_button.setOnClickListener {
+            this@dialog.dismiss()
+            startService(handlerServiceIntent)
+          }
           fullscreen_stop_handler_service_button.setOnClickListener {
             stopService(handlerServiceIntent).also {
-              Snackbar.make(this, "Handler service was stopped: $it", LENGTH_SHORT).show()
+              this@dialog.dismiss()
+              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Handler service was stopped: $it", LENGTH_LONG).show()
             }
           }
 
           fullscreen_start_foreground_wrong_service_button.setOnClickListener {
+            this@dialog.dismiss()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
               startForegroundService(rxServiceIntent)
             } else {
@@ -113,7 +112,8 @@ class FullscreenActivity : AppCompatActivity() {
           }
           fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
             stopService(rxServiceIntent).also {
-              Snackbar.make(this, "Foreground rx service was stopped: $it", LENGTH_SHORT).show()
+              this@dialog.dismiss()
+              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Foreground rx service was stopped: $it", LENGTH_LONG).show()
             }
           }
         }
@@ -137,7 +137,6 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
   private fun initKillProcessViews() {
-    fullscreen_kill_process_button.setOnTouchListener(delayHideTouchListener)
     fullscreen_kill_process_button.setOnClickListener {
       Process.killProcess(Process.myPid())
     }
