@@ -98,7 +98,7 @@ class FullscreenActivity : AppCompatActivity() {
           fullscreen_stop_rx_service_button.setOnClickListener {
             stopService(rxServiceIntent).also {
               this@dialog.dismiss()
-              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Rx service was stopped: $it", LENGTH_LONG).show()
+              "Rx service was stopped: $it".showSnack()
             }
           }
 
@@ -111,7 +111,7 @@ class FullscreenActivity : AppCompatActivity() {
           fullscreen_stop_handler_service_button.setOnClickListener {
             stopService(handlerServiceIntent).also {
               this@dialog.dismiss()
-              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Handler service was stopped: $it", LENGTH_LONG).show()
+              "Handler service was stopped: $it".showSnack()
             }
           }
 
@@ -126,7 +126,7 @@ class FullscreenActivity : AppCompatActivity() {
           fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
             stopService(rxServiceIntent).also {
               this@dialog.dismiss()
-              Snackbar.make(this@FullscreenActivity.fullscreen_container, "Foreground rx service was stopped: $it", LENGTH_LONG).show()
+              "Foreground rx service was stopped: $it".showSnack()
             }
           }
         }
@@ -137,16 +137,15 @@ class FullscreenActivity : AppCompatActivity() {
 
   private fun initManageBoundServicesViews() {
     fullscreen_manage_scheduled_service_button.setOnClickListener {
-      Snackbar.make(fullscreen_container, "TODO: Show scheduled services manager", LENGTH_LONG).show()
+      "TODO: Show scheduled services manager".showSnack()
     }
   }
 
   private fun initManageScheduledServicesViews() {
     fullscreen_manage_bound_service_button.setOnClickListener {
-      Snackbar.make(fullscreen_container, "TODO: Show bound services manager", LENGTH_LONG).show()
+      "TODO: Show bound services manager".showSnack()
     }
   }
-  //endregion
 
   private fun initContentViews() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -158,6 +157,11 @@ class FullscreenActivity : AppCompatActivity() {
     fullscreen_kill_process_button.setOnClickListener {
       Process.killProcess(Process.myPid())
     }
+  }
+  //endregion
+
+  private fun String.showSnack() {
+    Snackbar.make(fullscreen_container, this, LENGTH_LONG).show()
   }
 
   //region Fullscreen
