@@ -3,5 +3,5 @@
 
     <string name="start_timer_button">Start Timer Service</string>
     <string name="stop_timer_button">Stop Timer Service</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_content">SERVICE\nEVERYWHERE</string>
 </resources>

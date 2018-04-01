@@ -6,26 +6,26 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 
-//NOTE: Пока выполняется onHandleIntent, сервис не будет убит
-class TimerHandlerService : IntentService("TimerRxService") {
-  private var uiHandler: Handler? = null
-
+class TimerHandlerService : IntentService(TAG) {
   companion object {
     private const val TAG = "TimerHandlerService"
-    const val EXTRA_STOP = "$TAG.stop_service"
   }
+
+  private var uiHandler: Handler? = null
 
   override fun onCreate() {
     super.onCreate()
     Log.d(TAG, "onCreate")
     uiHandler = Handler()
-    "STARTED SERVICE: onCreate".showToast()
+    "$TAG: onCreate".showToast()
   }
 
+  // NOTE: Нужно очищать ресурсы: потоки, ресурсы и т.д.
+  // Иначе будут утечки - например, бесконечный цикл будет выполняться дальше.
   override fun onDestroy() {
     super.onDestroy()
     Log.d(TAG, "onDestroy")
-    "STARTED SERVICE: onDestroy".showToast()
+    "$TAG: onDestroy".showToast()
   }
 
   override fun onHandleIntent(intent: Intent) {
@@ -33,10 +33,13 @@ class TimerHandlerService : IntentService("TimerRxService") {
 
     var second = 0
     while (true) {
-      if (second == 0) {
-        "STARTED SERVICE: INVOKED".showToast()
+      val msg = if (second == 0) {
+        "$TAG: invoked"
       } else {
-        "STARTED SERVICE: $second second elapsed".showToast()
+        "$TAG: $second seconds elapsed"
+      }.also {
+        it.showToast()
+        Log.e(TAG, it)
       }
       second += 1
       Thread.sleep(1000L)

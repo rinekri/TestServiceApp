@@ -24,6 +24,10 @@
         <service
             android:name=".TimerRxService"
             android:exported="false" />
+
+        <service
+            android:name=".TimerHandlerService"
+            android:exported="false" />
     </application>
 
 </manifest>

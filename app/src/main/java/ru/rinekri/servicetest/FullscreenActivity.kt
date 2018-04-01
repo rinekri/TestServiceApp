@@ -71,7 +71,7 @@ class FullscreenActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     setContentView(R.layout.activity_fullscreen)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
     mVisible = true
 
