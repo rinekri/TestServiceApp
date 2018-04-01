@@ -16,7 +16,7 @@ class TimerHandlerService : IntentService(TAG) {
 
   override fun onCreate() {
     super.onCreate()
-    Log.d(TAG, "onCreate")
+    Log.e(TAG, "onCreate")
     uiHandler = Handler()
     "$TAG: onCreate".showToast()
   }
@@ -25,12 +25,12 @@ class TimerHandlerService : IntentService(TAG) {
   // Иначе будут утечки - например, бесконечный цикл будет выполняться дальше.
   override fun onDestroy() {
     super.onDestroy()
-    Log.d(TAG, "onDestroy")
+    Log.e(TAG, "onDestroy")
     "$TAG: onDestroy".showToast()
   }
 
   override fun onHandleIntent(intent: Intent) {
-    Log.d(TAG, "onHandleIntent")
+    Log.e(TAG, "onHandleIntent")
 
     var second = 0
     while (true) {
