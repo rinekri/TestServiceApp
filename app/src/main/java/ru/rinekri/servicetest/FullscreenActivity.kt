@@ -5,11 +5,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_fullscreen.*
+import kotlinx.android.synthetic.main.layout_started_service.view.*
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -54,10 +56,8 @@ class FullscreenActivity : AppCompatActivity() {
   private val showPart2Runnable = Runnable {
     // Delayed display of UI elements
     supportActionBar?.show()
-    fullscreen_started_rx_service_controls.visibility = View.VISIBLE
-    fullscreen_started_handler_service_controls.visibility = View.VISIBLE
+    fullscreen_manage_started_service_controls.visibility = View.VISIBLE
     fullscreen_kill_process_controls.visibility = View.VISIBLE
-    fullscreen_started_foreground_wrong_service_controls.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
   /**
@@ -77,10 +77,49 @@ class FullscreenActivity : AppCompatActivity() {
 
     setContentView(R.layout.activity_fullscreen)
     initContentViews()
-    initRxServiceViews()
-    initHandlerServiceViews()
-    initForegroundServiceViews()
+    initManageStartedServicesViews()
     initKillProcessViews()
+  }
+
+  private fun initManageStartedServicesViews() {
+    fullscreen_manage_started_service_button.setOnTouchListener(delayHideTouchListener)
+    fullscreen_manage_started_service_button.setOnClickListener {
+      BottomSheetDialog(this).apply {
+        val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply {
+
+          val rxServiceIntent = Intent(this@FullscreenActivity, TimerRxService::class.java)
+          fullscreen_start_rx_service_button.setOnClickListener { startService(rxServiceIntent) }
+          fullscreen_stop_rx_service_button.setOnClickListener {
+            stopService(rxServiceIntent).also {
+              Snackbar.make(this, "Rx service was stopped: $it", LENGTH_SHORT).show()
+            }
+          }
+
+          val handlerServiceIntent = Intent(this@FullscreenActivity, TimerHandlerService::class.java)
+
+          fullscreen_start_handler_service_button.setOnClickListener { startService(handlerServiceIntent) }
+          fullscreen_stop_handler_service_button.setOnClickListener {
+            stopService(handlerServiceIntent).also {
+              Snackbar.make(this, "Handler service was stopped: $it", LENGTH_SHORT).show()
+            }
+          }
+
+          fullscreen_start_foreground_wrong_service_button.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              startForegroundService(rxServiceIntent)
+            } else {
+              startService(rxServiceIntent)
+            }
+          }
+          fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
+            stopService(rxServiceIntent).also {
+              Snackbar.make(this, "Foreground rx service was stopped: $it", LENGTH_SHORT).show()
+            }
+          }
+        }
+        setContentView(manageStartedServiceView)
+      }.show()
+    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -95,53 +134,6 @@ class FullscreenActivity : AppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
     activityIsVisible = true
     fullscreen_content.setOnClickListener { toggleControls() }
-  }
-
-  private fun initRxServiceViews() {
-    val rxServiceIntent = Intent(this, TimerRxService::class.java)
-    fullscreen_start_rx_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_start_rx_service_button.setOnClickListener {
-      startService(rxServiceIntent)
-    }
-    fullscreen_stop_rx_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_stop_rx_service_button.setOnClickListener {
-      stopService(rxServiceIntent).also {
-        Snackbar.make(fullscreen_container, "Rx service was stopped: $it", LENGTH_SHORT).show()
-      }
-    }
-  }
-
-  private fun initHandlerServiceViews() {
-    val handlerServiceIntent = Intent(this, TimerHandlerService::class.java)
-    fullscreen_start_handler_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_start_handler_service_button.setOnClickListener {
-      startService(handlerServiceIntent)
-    }
-    fullscreen_stop_handler_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_stop_handler_service_button.setOnClickListener {
-      stopService(handlerServiceIntent).also {
-        Snackbar.make(fullscreen_container, "Handler service was stopped: $it", LENGTH_SHORT).show()
-      }
-    }
-  }
-
-
-  private fun initForegroundServiceViews() {
-    val rxServiceIntent = Intent(this, TimerRxService::class.java)
-    fullscreen_start_foreground_wrong_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_start_foreground_wrong_service_button.setOnClickListener {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startForegroundService(rxServiceIntent)
-      } else {
-        startService(rxServiceIntent)
-      }
-    }
-    fullscreen_stop_foreground_wrong_service_button.setOnTouchListener(delayHideTouchListener)
-    fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
-      stopService(rxServiceIntent).also {
-        Snackbar.make(fullscreen_container, "Foreground rx service was stopped: $it", LENGTH_SHORT).show()
-      }
-    }
   }
 
   private fun initKillProcessViews() {
@@ -162,10 +154,8 @@ class FullscreenActivity : AppCompatActivity() {
   private fun hide() {
     // Hide UI first
     supportActionBar?.hide()
-    fullscreen_started_rx_service_controls.visibility = View.GONE
-    fullscreen_started_handler_service_controls.visibility = View.GONE
+    fullscreen_manage_started_service_controls.visibility = View.GONE
     fullscreen_kill_process_controls.visibility = View.GONE
-    fullscreen_started_foreground_wrong_service_controls.visibility = View.GONE
     activityIsVisible = false
 
     // Schedule a runnable to remove the status and navigation bar after a delay
