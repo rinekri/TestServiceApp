@@ -28,6 +28,10 @@
         <service
             android:name=".services.TimerHandlerService"
             android:exported="false" />
+
+        <service
+            android:name=".services.ForegroundService"
+            android:exported="true" />
     </application>
 
 </manifest>

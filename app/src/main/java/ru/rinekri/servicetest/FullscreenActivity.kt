@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Process
 import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.Snackbar
-import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
+import ru.rinekri.servicetest.services.ForegroundService
 import ru.rinekri.servicetest.services.TimerHandlerService
 import ru.rinekri.servicetest.services.TimerRxService
+import ru.rinekri.servicetest.utils.showSnack
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -91,59 +91,88 @@ class FullscreenActivity : AppCompatActivity() {
         val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
 
           val rxServiceIntent = Intent(this@FullscreenActivity, TimerRxService::class.java)
-          fullscreen_start_rx_service_button.setOnClickListener {
-            this@dialog.dismiss()
-            startService(rxServiceIntent)
-          }
-          fullscreen_stop_rx_service_button.setOnClickListener {
-            stopService(rxServiceIntent).also {
-              this@dialog.dismiss()
-              "Rx service was stopped: $it".showSnack()
-            }
-          }
-
           val handlerServiceIntent = Intent(this@FullscreenActivity, TimerHandlerService::class.java)
+          val foregroundServiceIntent = Intent(this@FullscreenActivity, ForegroundService::class.java)
 
-          fullscreen_start_handler_service_button.setOnClickListener {
-            this@dialog.dismiss()
-            startService(handlerServiceIntent)
-          }
-          fullscreen_stop_handler_service_button.setOnClickListener {
-            stopService(handlerServiceIntent).also {
-              this@dialog.dismiss()
-              "Handler service was stopped: $it".showSnack()
-            }
-          }
-
-          fullscreen_start_foreground_wrong_service_button.setOnClickListener {
-            this@dialog.dismiss()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-              startForegroundService(rxServiceIntent)
-            } else {
-              startService(rxServiceIntent)
-            }
-          }
-          fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
-            stopService(rxServiceIntent).also {
-              this@dialog.dismiss()
-              "Foreground rx service was stopped: $it".showSnack()
-            }
-          }
+          initRxServiceViews(this, this@dialog, rxServiceIntent)
+          initHandlerServiceViews(this, this@dialog, handlerServiceIntent)
+          initFullscreenWrongServiceViews(this, this@dialog, rxServiceIntent)
+          initFullscreenCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
         }
         setContentView(manageStartedServiceView)
       }.show()
     }
   }
 
+  private fun initRxServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
+    view.fullscreen_start_rx_service_button.setOnClickListener {
+      bottomSheetDialog.dismiss()
+      startService(rxServiceIntent)
+    }
+    view.fullscreen_stop_rx_service_button.setOnClickListener {
+      stopService(rxServiceIntent).also {
+        bottomSheetDialog.dismiss()
+        "Rx service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
+      }
+    }
+  }
+
+  private fun initHandlerServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, handlerServiceIntent: Intent) {
+    view.fullscreen_start_handler_service_button.setOnClickListener {
+      bottomSheetDialog.dismiss()
+      startService(handlerServiceIntent)
+    }
+    view.fullscreen_stop_handler_service_button.setOnClickListener {
+      stopService(handlerServiceIntent).also {
+        bottomSheetDialog.dismiss()
+        "Handler service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
+      }
+    }
+  }
+
+  private fun initFullscreenWrongServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
+    view.fullscreen_start_foreground_wrong_service_button.setOnClickListener {
+      bottomSheetDialog.dismiss()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(rxServiceIntent)
+      } else {
+        startService(rxServiceIntent)
+      }
+    }
+    view.fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
+      stopService(rxServiceIntent).also {
+        bottomSheetDialog.dismiss()
+        "Foreground wrong rx service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
+      }
+    }
+  }
+
+  private fun initFullscreenCorrectServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, foregroundServiceIntent: Intent) {
+    view.fullscreen_start_foreground_correct_service_button.setOnClickListener {
+      bottomSheetDialog.dismiss()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(foregroundServiceIntent)
+      } else {
+        startService(foregroundServiceIntent)
+      }
+    }
+    view.fullscreen_stop_foreground_correct_service_button.setOnClickListener {
+      stopService(foregroundServiceIntent).also {
+        bottomSheetDialog.dismiss()
+        "Handler service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
+      }
+    }
+  }
+
   private fun initManageBoundServicesViews() {
     fullscreen_manage_scheduled_service_button.setOnClickListener {
-      "TODO: Show scheduled services manager".showSnack()
+      "TODO: Show scheduled services manager".showSnack(fullscreen_container)
     }
   }
 
   private fun initManageScheduledServicesViews() {
     fullscreen_manage_bound_service_button.setOnClickListener {
-      "TODO: Show bound services manager".showSnack()
+      "TODO: Show bound services manager".showSnack(fullscreen_container)
     }
   }
 
@@ -159,10 +188,6 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
   //endregion
-
-  private fun String.showSnack() {
-    Snackbar.make(fullscreen_container, this, LENGTH_LONG).show()
-  }
 
   //region Fullscreen
   private fun toggleControls() {

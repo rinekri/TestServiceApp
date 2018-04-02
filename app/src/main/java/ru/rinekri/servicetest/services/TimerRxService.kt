@@ -3,11 +3,10 @@ package ru.rinekri.servicetest.services
 import android.app.Service
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import ru.rinekri.servicetest.utils.showToast
 import java.util.concurrent.TimeUnit
 
 class TimerRxService : Service() {
@@ -19,14 +18,14 @@ class TimerRxService : Service() {
 
   override fun onCreate() {
     Log.e(TAG, "onCreate")
-    "${TAG}: created".showToast()
+    "$TAG: created".showToast(applicationContext)
   }
 
   //NOTE: Нужно очищать ресурсы: потоки, ресурсы и т.д.
   override fun onDestroy() {
     compositeDisposable.clear()
     Log.e(TAG, "onDestroy")
-    "${TAG}: destroyed".showToast()
+    "$TAG: destroyed".showToast(applicationContext)
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -40,7 +39,7 @@ class TimerRxService : Service() {
         } else {
           "${TAG} $startId: $second seconds elapsed"
         }
-        msg.showToast()
+        msg.showToast(applicationContext)
         Log.e(TAG, msg)
       }
       .also { compositeDisposable.add(it) }
@@ -48,8 +47,4 @@ class TimerRxService : Service() {
   }
 
   override fun onBind(intent: Intent?) = null
-
-  private fun String.showToast(length: Int = LENGTH_SHORT) {
-    Toast.makeText(applicationContext, this, length).show()
-  }
 }

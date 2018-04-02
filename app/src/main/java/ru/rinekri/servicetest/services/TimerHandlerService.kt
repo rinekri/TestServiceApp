@@ -4,8 +4,7 @@ import android.app.IntentService
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
+import ru.rinekri.servicetest.utils.showToast
 
 class TimerHandlerService : IntentService(TAG) {
   companion object {
@@ -18,7 +17,7 @@ class TimerHandlerService : IntentService(TAG) {
     super.onCreate()
     Log.e(TAG, "onCreate")
     uiHandler = Handler()
-    "${TAG}: onCreate".showToast()
+    "$TAG: onCreate".showToast(applicationContext)
   }
 
   // NOTE: Нужно очищать ресурсы: потоки, ресурсы и т.д.
@@ -26,7 +25,7 @@ class TimerHandlerService : IntentService(TAG) {
   override fun onDestroy() {
     super.onDestroy()
     Log.e(TAG, "onDestroy")
-    "${TAG}: onDestroy".showToast()
+    "$TAG: onDestroy".showToast(applicationContext)
   }
 
   override fun onHandleIntent(intent: Intent) {
@@ -39,15 +38,11 @@ class TimerHandlerService : IntentService(TAG) {
       } else {
         "${TAG}: $second seconds elapsed"
       }.also {
-        it.showToast()
+        it.showToast(applicationContext)
         Log.e(TAG, it)
       }
       second += 1
       Thread.sleep(1000L)
     }
-  }
-
-  private fun String.showToast(length: Int = LENGTH_SHORT) {
-    uiHandler?.post { Toast.makeText(applicationContext, this, length).show() }
   }
 }

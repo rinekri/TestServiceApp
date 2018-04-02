@@ -10,6 +10,8 @@
     <string name="stop_handler_service_button">Stop handler\nservice</string>
     <string name="start_foreground_wrong_service_button">Start foreground\nwrong service</string>
     <string name="stop_foreground_wrong_service_button">Stop foreground\nwrong service</string>
+    <string name="start_foreground_correct_service_button">Start foreground\ncorrect service</string>
+    <string name="stop_foreground_correct_service_button">Stop foreground\ncorrect service</string>
     <string name="kill_process_button">Kill process</string>
     <string name="dummy_content">CHOOSE\nYOUR\nDESTINY</string>
 </resources>
