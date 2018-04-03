@@ -1,6 +1,7 @@
 package ru.rinekri.servicetest.services
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import io.reactivex.Observable
@@ -12,6 +13,8 @@ import java.util.concurrent.TimeUnit
 class TimerRxService : Service() {
   companion object {
     private const val TAG = "TimerRxService"
+
+    fun newIntent(context: Context) = Intent(context, TimerRxService::class.java)
   }
 
   private var compositeDisposable = CompositeDisposable()
@@ -35,9 +38,9 @@ class TimerRxService : Service() {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { second ->
         val msg = if (second == 0L) {
-          "${TAG} $startId: invoked"
+          "$TAG $startId: invoked"
         } else {
-          "${TAG} $startId: $second seconds elapsed"
+          "$TAG $startId: $second seconds elapsed"
         }
         msg.showToast(applicationContext)
         Log.e(TAG, msg)

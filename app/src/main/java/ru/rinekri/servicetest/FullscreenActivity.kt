@@ -87,7 +87,7 @@ class FullscreenActivity : AppCompatActivity() {
 
   private fun destroyForegroundServiceIfNeed() {
     if (intent.hasExtra(EXTRA_CLOSE_FOREGROUND_SERVICE)) {
-      stopService(Intent(this, ForegroundService::class.java))
+      stopService(ForegroundService.newIntent(this))
     }
   }
 
@@ -107,9 +107,9 @@ class FullscreenActivity : AppCompatActivity() {
 
         val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
 
-          val rxServiceIntent = Intent(this@FullscreenActivity, TimerRxService::class.java)
-          val handlerServiceIntent = Intent(this@FullscreenActivity, TimerHandlerService::class.java)
-          val foregroundServiceIntent = Intent(this@FullscreenActivity, ForegroundService::class.java)
+          val rxServiceIntent = TimerRxService.newIntent(context)
+          val handlerServiceIntent = TimerHandlerService.newIntent(context, true)
+          val foregroundServiceIntent = ForegroundService.newIntent(context)
 
           initRxServiceViews(this, this@dialog, rxServiceIntent)
           initHandlerServiceViews(this, this@dialog, handlerServiceIntent)

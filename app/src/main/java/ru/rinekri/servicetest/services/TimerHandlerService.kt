@@ -1,6 +1,7 @@
 package ru.rinekri.servicetest.services
 
 import android.app.IntentService
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
@@ -9,6 +10,13 @@ import ru.rinekri.servicetest.utils.showToast
 class TimerHandlerService : IntentService(TAG) {
   companion object {
     private const val TAG = "TimerHandlerService"
+    private const val EXTRA_WITH_LOOP = "$TAG.with_loop"
+
+    fun newIntent(context: Context, withLoop: Boolean): Intent {
+      return Intent(context, TimerHandlerService::class.java).apply {
+        putExtra(EXTRA_WITH_LOOP, withLoop)
+      }
+    }
   }
 
   private var uiHandler: Handler? = null
@@ -31,18 +39,20 @@ class TimerHandlerService : IntentService(TAG) {
   override fun onHandleIntent(intent: Intent) {
     Log.e(TAG, "onHandleIntent")
 
-    var second = 0
-    while (true) {
-      if (second == 0) {
-        "${TAG}: invoked"
-      } else {
-        "${TAG}: $second seconds elapsed"
-      }.also {
-        it.showToast(applicationContext)
-        Log.e(TAG, it)
+    if (intent.hasExtra(EXTRA_WITH_LOOP)) {
+      var second = 0
+      while (true) {
+        if (second == 0) {
+          "$TAG: invoked"
+        } else {
+          "$TAG: $second seconds elapsed"
+        }.also {
+          it.showToast(applicationContext)
+          Log.e(TAG, it)
+        }
+        second += 1
+        Thread.sleep(1000L)
       }
-      second += 1
-      Thread.sleep(1000L)
     }
   }
 }

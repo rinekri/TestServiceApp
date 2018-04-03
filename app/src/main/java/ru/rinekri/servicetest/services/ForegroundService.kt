@@ -1,6 +1,7 @@
 package ru.rinekri.servicetest.services
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import ru.rinekri.servicetest.utils.NotificationUtils
@@ -10,6 +11,8 @@ class ForegroundService : Service() {
   companion object {
     private const val TAG = "ForegroundService"
     private const val FOREGROUND_NOTIFICATION_ID = 1
+
+    fun newIntent(context: Context) = Intent(context, ForegroundService::class.java)
   }
 
   override fun onCreate() {
