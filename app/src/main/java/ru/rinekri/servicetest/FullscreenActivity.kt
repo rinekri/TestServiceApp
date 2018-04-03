@@ -1,5 +1,6 @@
 package ru.rinekri.servicetest
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,7 @@ import ru.rinekri.servicetest.utils.showSnack
  */
 class FullscreenActivity : AppCompatActivity() {
   companion object {
+    private const val TAG = "FullscreenActivity"
     /**
      * Whether or not the system UI should be auto-hidden after
      * [AUTO_HIDE_DELAY_MILLIS] milliseconds.
@@ -38,6 +40,14 @@ class FullscreenActivity : AppCompatActivity() {
      * and a change of the status and navigation bar.
      */
     private const val UI_ANIMATION_DELAY = 300L
+
+    private const val EXTRA_CLOSE_FOREGROUND_SERVICE = "$TAG.close_foreground_service"
+
+    fun newIntent(context: Context, closeForegroundService: Boolean): Intent {
+      return Intent(context, FullscreenActivity::class.java).apply {
+        putExtra(EXTRA_CLOSE_FOREGROUND_SERVICE, closeForegroundService)
+      }
+    }
   }
 
   private val hideHandler = Handler()
@@ -72,6 +82,13 @@ class FullscreenActivity : AppCompatActivity() {
     initManageBoundServicesViews()
     initManageScheduledServicesViews()
     initKillProcessViews()
+    destroyForegroundServiceIfNeed()
+  }
+
+  private fun destroyForegroundServiceIfNeed() {
+    if (intent.hasExtra(EXTRA_CLOSE_FOREGROUND_SERVICE)) {
+      stopService(Intent(this, ForegroundService::class.java))
+    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -96,8 +113,8 @@ class FullscreenActivity : AppCompatActivity() {
 
           initRxServiceViews(this, this@dialog, rxServiceIntent)
           initHandlerServiceViews(this, this@dialog, handlerServiceIntent)
-          initFullscreenWrongServiceViews(this, this@dialog, rxServiceIntent)
-          initFullscreenCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
+          initForegroundWrongServiceViews(this, this@dialog, rxServiceIntent)
+          initForegroundCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
         }
         setContentView(manageStartedServiceView)
       }.show()
@@ -130,7 +147,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
 
-  private fun initFullscreenWrongServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
+  private fun initForegroundWrongServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
     view.fullscreen_start_foreground_wrong_service_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -147,7 +164,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
 
-  private fun initFullscreenCorrectServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, foregroundServiceIntent: Intent) {
+  private fun initForegroundCorrectServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, foregroundServiceIntent: Intent) {
     view.fullscreen_start_foreground_correct_service_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
