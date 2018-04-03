@@ -36,10 +36,11 @@ class TimerHandlerService : IntentService(TAG) {
     "$TAG: onDestroy".showToast(applicationContext)
   }
 
+
   override fun onHandleIntent(intent: Intent) {
     Log.e(TAG, "onHandleIntent")
 
-    if (intent.hasExtra(EXTRA_WITH_LOOP)) {
+    if (intent.extras.getBoolean(EXTRA_WITH_LOOP)) {
       var second = 0
       while (true) {
         if (second == 0) {
@@ -47,12 +48,14 @@ class TimerHandlerService : IntentService(TAG) {
         } else {
           "$TAG: $second seconds elapsed"
         }.also {
-          it.showToast(applicationContext)
+          uiHandler?.post { it.showToast(applicationContext) }
           Log.e(TAG, it)
         }
         second += 1
         Thread.sleep(1000L)
       }
+    } else {
+      uiHandler?.post { "onHandleIntent".showToast(applicationContext) }
     }
   }
 }

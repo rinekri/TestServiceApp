@@ -108,11 +108,10 @@ class FullscreenActivity : AppCompatActivity() {
         val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
 
           val rxServiceIntent = TimerRxService.newIntent(context)
-          val handlerServiceIntent = TimerHandlerService.newIntent(context, true)
           val foregroundServiceIntent = ForegroundService.newIntent(context)
 
           initRxServiceViews(this, this@dialog, rxServiceIntent)
-          initHandlerServiceViews(this, this@dialog, handlerServiceIntent)
+          initHandlerServiceViews(this, this@dialog)
           initForegroundWrongServiceViews(this, this@dialog, rxServiceIntent)
           initForegroundCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
         }
@@ -134,13 +133,20 @@ class FullscreenActivity : AppCompatActivity() {
     }
   }
 
-  private fun initHandlerServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, handlerServiceIntent: Intent) {
-    view.fullscreen_start_handler_service_button.setOnClickListener {
+  private fun initHandlerServiceViews(view: View, bottomSheetDialog: BottomSheetDialog) {
+    val handlerWithLoopServiceIntent = TimerHandlerService.newIntent(this, true)
+    val handlerNormalServiceIntent = TimerHandlerService.newIntent(this, false)
+
+    view.fullscreen_start_handler_service_with_loop_button.setOnClickListener {
       bottomSheetDialog.dismiss()
-      startService(handlerServiceIntent)
+      startService(handlerWithLoopServiceIntent)
+    }
+    view.fullscreen_start_handler_service_normal_button.setOnClickListener {
+      bottomSheetDialog.dismiss()
+      startService(handlerNormalServiceIntent)
     }
     view.fullscreen_stop_handler_service_button.setOnClickListener {
-      stopService(handlerServiceIntent).also {
+      stopService(handlerWithLoopServiceIntent).also {
         bottomSheetDialog.dismiss()
         "Handler service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
       }
