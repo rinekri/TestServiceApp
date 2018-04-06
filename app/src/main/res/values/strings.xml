@@ -2,7 +2,7 @@
     <string name="app_name">ServiceTest</string>
 
     <string name="manage_started_service_title">Manage started service</string>
-    <string name="manage_bound_service_title">Manage bound service</string>
+    <string name="manage_bound_service_title">Show message from bound service</string>
     <string name="manage_scheduled_service_title">Manage scheduled service</string>
 
     <string name="rx_service_title">Rx service</string>

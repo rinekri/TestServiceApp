@@ -1,12 +1,11 @@
 package ru.rinekri.servicetest
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Rect
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Process
+import android.os.*
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -15,10 +14,12 @@ import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
+import ru.rinekri.servicetest.services.BoundService
 import ru.rinekri.servicetest.services.ForegroundService
 import ru.rinekri.servicetest.services.TimerHandlerService
 import ru.rinekri.servicetest.services.TimerRxService
 import ru.rinekri.servicetest.utils.showSnack
+import ru.rinekri.servicetest.utils.showToast
 
 
 /**
@@ -76,6 +77,18 @@ class FullscreenActivity : AppCompatActivity() {
     floating_action_button.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
+  private var boundService: BoundService? = null
+  private val serviceConnection = object : ServiceConnection {
+    override fun onServiceConnected(
+      cName: ComponentName, service: IBinder) {
+      val binder = service as BoundService.BoundServiceBinder
+      boundService = binder.service
+    }
+
+    override fun onServiceDisconnected(cName: ComponentName) {
+      boundService = null
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -87,6 +100,18 @@ class FullscreenActivity : AppCompatActivity() {
     initManageScheduledServicesViews()
     initKillProcessViews()
     destroyForegroundServiceIfNeed()
+  }
+
+  override fun onStart() {
+    super.onStart()
+    bindService(BoundService.newIntent(this), serviceConnection, BIND_AUTO_CREATE)
+    "$TAG onStart".showToast(this)
+  }
+
+  override fun onStop() {
+    super.onStop()
+    boundService?.let { unbindService(serviceConnection); boundService = null }
+    "$TAG onStop".showToast(this)
   }
 
   private fun destroyForegroundServiceIfNeed() {
@@ -203,8 +228,7 @@ class FullscreenActivity : AppCompatActivity() {
       .normalImageRes(R.drawable.ic_broken_image_24dp)
       .imagePadding(Rect(40, 40, 40, 40))
       .listener {
-        "TODO: Show scheduled services manager".showSnack(fullscreen_container)
-
+        boundService?.message?.showSnack(fullscreen_container) ?: "Problem with showing message".showToast(this)
       }
       .apply {
         floating_action_button.addBuilder(this)
@@ -217,7 +241,7 @@ class FullscreenActivity : AppCompatActivity() {
       .normalImageRes(R.drawable.ic_add_alarm_24dp)
       .imagePadding(Rect(40, 40, 40, 40))
       .listener {
-        "TODO: Show bound services manager".showSnack(fullscreen_container)
+        "TODO: Show Scheduled services manager".showSnack(fullscreen_container)
       }
       .apply {
         floating_action_button.addBuilder(this)
