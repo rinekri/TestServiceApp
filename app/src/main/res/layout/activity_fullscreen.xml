@@ -1,4 +1,5 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fullscreen_container"
     android:layout_width="match_parent"
@@ -20,76 +21,13 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-
-        <LinearLayout
-            android:id="@+id/fullscreen_manage_started_service_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/fullscreen_manage_started_service_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/manage_started_service_title"
-                android:textColor="@color/colorBlueDark" />
-
-            <Button
-                android:id="@+id/fullscreen_manage_bound_service_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/manage_bound_service_title"
-                android:textColor="@color/colorGreenDark" />
-
-            <Button
-                android:id="@+id/fullscreen_manage_scheduled_service_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/manage_scheduled_service_title"
-                android:textColor="@color/colorOrangeDark" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fullscreen_kill_process_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/fullscreen_kill_process_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/kill_process_button" />
-        </LinearLayout>
-    </LinearLayout>
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        app:bmb_buttonEnum="ham"
+        app:layout_behavior="ru.rinekri.servicetest.utils.FloatingButtonBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

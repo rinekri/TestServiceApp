@@ -2,6 +2,7 @@ package ru.rinekri.servicetest
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -9,12 +10,16 @@ import android.os.Process
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
+import com.nightonke.boommenu.BoomButtons.HamButton
+import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
 import ru.rinekri.servicetest.services.ForegroundService
 import ru.rinekri.servicetest.services.TimerHandlerService
 import ru.rinekri.servicetest.services.TimerRxService
 import ru.rinekri.servicetest.utils.showSnack
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -68,8 +73,7 @@ class FullscreenActivity : AppCompatActivity() {
   private val showPart2Runnable = Runnable {
     // Delayed display of UI elements
     supportActionBar?.show()
-    fullscreen_manage_started_service_controls.visibility = View.VISIBLE
-    fullscreen_kill_process_controls.visibility = View.VISIBLE
+    floating_action_button.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
 
@@ -101,23 +105,29 @@ class FullscreenActivity : AppCompatActivity() {
 
   //region Services
   private fun initManageStartedServicesViews() {
-    fullscreen_manage_started_service_button.setOnClickListener {
+    HamButton.Builder()
+      .normalTextRes(R.string.manage_started_service_title)
+      .normalImageRes(R.drawable.ic_add_alert_24dp)
+      .imagePadding(Rect(40, 40, 40, 40))
+      .listener {
+        BottomSheetDialog(this).apply dialog@{
 
-      BottomSheetDialog(this).apply dialog@{
+          val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
 
-        val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_started_service, null).apply dialogView@{
+            val rxServiceIntent = TimerRxService.newIntent(context)
+            val foregroundServiceIntent = ForegroundService.newIntent(context)
 
-          val rxServiceIntent = TimerRxService.newIntent(context)
-          val foregroundServiceIntent = ForegroundService.newIntent(context)
-
-          initRxServiceViews(this, this@dialog, rxServiceIntent)
-          initHandlerServiceViews(this, this@dialog)
-          initForegroundWrongServiceViews(this, this@dialog, rxServiceIntent)
-          initForegroundCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
-        }
-        setContentView(manageStartedServiceView)
-      }.show()
-    }
+            initRxServiceViews(this, this@dialog, rxServiceIntent)
+            initHandlerServiceViews(this, this@dialog)
+            initForegroundWrongServiceViews(this, this@dialog, rxServiceIntent)
+            initForegroundCorrectServiceViews(this, this@dialog, foregroundServiceIntent)
+          }
+          setContentView(manageStartedServiceView)
+        }.show()
+      }
+      .apply {
+        floating_action_button.addBuilder(this)
+      }
   }
 
   private fun initRxServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
@@ -188,27 +198,51 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
   private fun initManageBoundServicesViews() {
-    fullscreen_manage_scheduled_service_button.setOnClickListener {
-      "TODO: Show scheduled services manager".showSnack(fullscreen_container)
-    }
+    HamButton.Builder()
+      .normalTextRes(R.string.manage_bound_service_title)
+      .normalImageRes(R.drawable.ic_broken_image_24dp)
+      .imagePadding(Rect(40, 40, 40, 40))
+      .listener {
+        "TODO: Show scheduled services manager".showSnack(fullscreen_container)
+
+      }
+      .apply {
+        floating_action_button.addBuilder(this)
+      }
   }
 
   private fun initManageScheduledServicesViews() {
-    fullscreen_manage_bound_service_button.setOnClickListener {
-      "TODO: Show bound services manager".showSnack(fullscreen_container)
-    }
+    HamButton.Builder()
+      .normalTextRes(R.string.manage_scheduled_service_title)
+      .normalImageRes(R.drawable.ic_add_alarm_24dp)
+      .imagePadding(Rect(40, 40, 40, 40))
+      .listener {
+        "TODO: Show bound services manager".showSnack(fullscreen_container)
+      }
+      .apply {
+        floating_action_button.addBuilder(this)
+      }
   }
 
   private fun initContentViews() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
     activityIsVisible = true
     fullscreen_content.setOnClickListener { toggleControls() }
+    floating_action_button.piecePlaceEnum = PiecePlaceEnum.HAM_4
+    floating_action_button.buttonPlaceEnum = ButtonPlaceEnum.HAM_4
   }
 
   private fun initKillProcessViews() {
-    fullscreen_kill_process_button.setOnClickListener {
-      Process.killProcess(Process.myPid())
-    }
+    HamButton.Builder()
+      .normalTextRes(R.string.kill_process_button)
+      .normalImageRes(R.drawable.ic_delete_24dp)
+      .imagePadding(Rect(40, 40, 40, 40))
+      .listener {
+        Process.killProcess(Process.myPid())
+      }
+      .apply {
+        floating_action_button.addBuilder(this)
+      }
   }
   //endregion
 
@@ -224,8 +258,7 @@ class FullscreenActivity : AppCompatActivity() {
   private fun hide() {
     // Hide UI first
     supportActionBar?.hide()
-    fullscreen_manage_started_service_controls.visibility = View.GONE
-    fullscreen_kill_process_controls.visibility = View.GONE
+    floating_action_button.visibility = View.GONE
     activityIsVisible = false
 
     // Schedule a runnable to remove the status and navigation bar after a delay

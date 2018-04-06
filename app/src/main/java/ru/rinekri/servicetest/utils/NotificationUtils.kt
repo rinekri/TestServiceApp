@@ -20,9 +20,9 @@ object NotificationUtils {
       .setContentTitle("Service Test title")
       .setContentText("Service Test text")
       .setAutoCancel(true)
-      .setSmallIcon(R.drawable.ic_copyright_black_24dp)
+      .setSmallIcon(R.drawable.ic_copyright_24dp)
       .setStyle(NotificationCompat.BigTextStyle())
-      .addAction(R.drawable.ic_copyright_black_24dp, "Закрыть", startActivityIntent.toPendingIntent(context))
+      .addAction(R.drawable.ic_copyright_24dp, "Закрыть", startActivityIntent.toPendingIntent(context))
       .build()
   }
 
