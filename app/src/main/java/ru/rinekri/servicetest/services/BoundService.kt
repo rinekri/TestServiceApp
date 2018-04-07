@@ -1,6 +1,5 @@
 package ru.rinekri.servicetest.services
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -8,7 +7,6 @@ import android.os.Binder
 import android.util.Log
 import ru.rinekri.servicetest.utils.showToast
 
-@SuppressLint("Registered")
 class BoundService : Service() {
   companion object {
     private const val TAG = "BoundService"
@@ -21,12 +19,12 @@ class BoundService : Service() {
 
   override fun onCreate() {
     Log.e(TAG, "onCreate")
-    "$TAG: created".showToast(applicationContext)
+    "$TAG: onCreate".showToast(applicationContext)
   }
 
   override fun onDestroy() {
     Log.e(TAG, "onDestroy")
-    "$TAG: destroyed".showToast(applicationContext)
+    "$TAG: onDestroy".showToast(applicationContext)
   }
 
   override fun onBind(intent: Intent?): Binder {

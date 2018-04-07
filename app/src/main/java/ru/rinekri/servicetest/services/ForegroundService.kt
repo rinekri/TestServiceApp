@@ -17,12 +17,12 @@ class ForegroundService : Service() {
 
   override fun onCreate() {
     Log.e(TAG, "onCreate")
-    "$TAG: created".showToast(applicationContext)
+    "$TAG: onCreate".showToast(applicationContext)
   }
 
   override fun onDestroy() {
     Log.e(TAG, "onDestroy")
-    "$TAG: destroyed".showToast(applicationContext)
+    "$TAG: onDestroy".showToast(applicationContext)
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

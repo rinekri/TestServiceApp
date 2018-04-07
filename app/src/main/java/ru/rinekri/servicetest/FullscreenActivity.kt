@@ -79,14 +79,15 @@ class FullscreenActivity : AppCompatActivity() {
   private var activityIsVisible: Boolean = false
   private var boundService: BoundService? = null
   private val serviceConnection = object : ServiceConnection {
-    override fun onServiceConnected(
-      cName: ComponentName, service: IBinder) {
+    override fun onServiceConnected(cName: ComponentName, service: IBinder) {
       val binder = service as BoundService.BoundServiceBinder
       boundService = binder.service
+      "onBoundServiceConnected".showToast(this@FullscreenActivity)
     }
 
     override fun onServiceDisconnected(cName: ComponentName) {
       boundService = null
+      "onBoundServiceDisconnected".showToast(this@FullscreenActivity)
     }
   }
 
@@ -228,7 +229,8 @@ class FullscreenActivity : AppCompatActivity() {
       .normalImageRes(R.drawable.ic_broken_image_24dp)
       .imagePadding(Rect(40, 40, 40, 40))
       .listener {
-        boundService?.message?.showSnack(fullscreen_container) ?: "Problem with showing message".showToast(this)
+        boundService?.message?.showSnack(fullscreen_container)
+          ?: "Problem with showing message".showToast(this)
       }
       .apply {
         floating_action_button.addBuilder(this)
