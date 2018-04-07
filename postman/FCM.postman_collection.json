@@ -1,0 +1,36 @@
+{
+	"variables": [],
+	"info": {
+		"name": "FCM",
+		"_postman_id": "c43317c0-acd9-5d0e-74ef-c6979fbdbce7",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Send data notification",
+			"request": {
+				"url": "https://fcm.googleapis.com/fcm/send",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " key=AAAAu7t0z8s:APA91bG5sK1MQenhvm1_MBQmtaXw7_kXpYLMemZN6ZWdwvKQLOKrhM36h8nPIulREmK8UhH8pfPle_y77AyGLLaJAU7vT2vShzZGwQ3mz9mgNeLciuUgsLZ-8-NjyI4i81itRpypfF9j",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"to\" : \"/topics/all\",\n \"priority\": \"normal\",\n \"collapse_key\" : \"type_a\",\n \"data\" : {\n     \"body\" : \"First Notification\",\n     \"title\": \"Collapsing A\",\n     \"key_1\" : \"Data for key one\",\n     \"key_2\" : \"Hellowww\"\n }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

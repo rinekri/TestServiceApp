@@ -8,7 +8,10 @@ import android.graphics.Rect
 import android.os.*
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
 import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
@@ -77,6 +80,8 @@ class FullscreenActivity : AppCompatActivity() {
     initManageScheduledServicesViews()
     initKillProcessViews()
     destroyForegroundServiceIfNeed()
+    FirebaseMessaging.getInstance().subscribeToTopic("all");
+    Log.e(TAG, "FCM TOKEN ${FirebaseInstanceId.getInstance().token}")
   }
 
   override fun onStart() {

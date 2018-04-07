@@ -5,6 +5,7 @@
 *.apk
 *.ap_
 *.log
+google-services.json
 bin/
 gen/
 .gradle/
