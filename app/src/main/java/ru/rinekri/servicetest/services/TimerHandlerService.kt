@@ -20,9 +20,11 @@ class TimerHandlerService : IntentService(TAG) {
   }
 
   private var uiHandler: Handler? = null
+  private var shouldReleaseResources = false
 
   override fun onCreate() {
     super.onCreate()
+    shouldReleaseResources = false
     Log.e(TAG, "onCreate")
     uiHandler = Handler()
     "$TAG: onCreate".showToast(applicationContext)
@@ -32,6 +34,7 @@ class TimerHandlerService : IntentService(TAG) {
   // Иначе будут утечки - например, бесконечный цикл будет выполняться дальше.
   override fun onDestroy() {
     super.onDestroy()
+    shouldReleaseResources = true
     Log.e(TAG, "onDestroy")
     "$TAG: onDestroy".showToast(applicationContext)
   }
@@ -41,7 +44,7 @@ class TimerHandlerService : IntentService(TAG) {
 
     if (intent.extras.getBoolean(EXTRA_WITH_LOOP)) {
       var second = 0
-      while (true) {
+      while (!shouldReleaseResources) {
         if (second == 0) {
           "$TAG: invoked"
         } else {

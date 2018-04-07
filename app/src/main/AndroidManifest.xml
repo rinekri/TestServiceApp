@@ -30,7 +30,7 @@
             android:exported="false" />
 
         <service
-            android:name=".services.ForegroundService"
+            android:name=".services.ForegroundRxService"
             android:exported="true" />
 
         <service
