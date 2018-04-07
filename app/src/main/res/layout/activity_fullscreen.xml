@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         app:bmb_buttonEnum="ham"
+        android:layout_marginBottom="46dp"
         app:layout_behavior="ru.rinekri.servicetest.utils.FloatingButtonBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>
