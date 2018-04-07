@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">ServiceTest</string>
 
-    <string name="manage_started_service_title">Manage started service</string>
-    <string name="manage_bound_service_title">Show message from bound service</string>
-    <string name="manage_scheduled_service_title">Manage scheduled service</string>
+    <string name="manage_started_service_title">Manage STARTED service</string>
+    <string name="manage_bound_service_title">Manage BOUND service</string>
+    <string name="manage_scheduled_service_title">Manage SCHEDULED service</string>
 
     <string name="rx_service_title">Rx service</string>
     <string name="handler_service_title">Handler service</string>
@@ -11,9 +11,13 @@
 
     <string name="start_rx_service_button">Start</string>
     <string name="stop_rx_service_button">Stop</string>
-    <string name="start_handler_service_button_with_loop">Start with loop</string>
-    <string name="start_handler_service_button_normal">Start normal</string>
+    <string name="start_handler_service_button_with_loop">Start\nwith loop</string>
+    <string name="start_handler_service_button_normal">Start\nnormal</string>
     <string name="stop_handler_service_button">Stop</string>
+
+    <string name="get_message_from_bound_service_button">Get message</string>
+    <string name="bound_service_button">Bound</string>
+    <string name="unbound_service_button">Unbound</string>
 
     <string name="start_foreground_wrong_service_button">Start wrong service</string>
     <string name="stop_foreground_wrong_service_button">Stop wrong service</string>

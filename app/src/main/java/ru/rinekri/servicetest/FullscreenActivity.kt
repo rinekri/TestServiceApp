@@ -13,6 +13,7 @@ import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
 import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import kotlinx.android.synthetic.main.activity_fullscreen.*
+import kotlinx.android.synthetic.main.layout_bound_service.view.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
 import ru.rinekri.servicetest.services.BoundService
 import ru.rinekri.servicetest.services.ForegroundService
@@ -21,32 +22,10 @@ import ru.rinekri.servicetest.services.TimerRxService
 import ru.rinekri.servicetest.utils.showSnack
 import ru.rinekri.servicetest.utils.showToast
 
-
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class FullscreenActivity : AppCompatActivity() {
   companion object {
     private const val TAG = "FullscreenActivity"
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * [AUTO_HIDE_DELAY_MILLIS] milliseconds.
-     */
-    private const val AUTO_HIDE = true
-
-    /**
-     * If [AUTO_HIDE] is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private const val AUTO_HIDE_DELAY_MILLIS = 3000L
-
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
     private const val UI_ANIMATION_DELAY = 300L
-
     private const val EXTRA_CLOSE_FOREGROUND_SERVICE = "$TAG.close_foreground_service"
 
     fun newIntent(context: Context, closeForegroundService: Boolean): Intent {
@@ -59,10 +38,6 @@ class FullscreenActivity : AppCompatActivity() {
   private val hideHandler = Handler()
   private val hideRunnable = Runnable { hide() }
   private val hidePart2Runnable = Runnable {
-    // Delayed removal of status and navigation bar
-    // Note that some of these constants are new as of API 16 (Jelly Bean)
-    // and API 19 (KitKat). It is safe to use them, as they are inlined
-    // at compile-time and do nothing on earlier devices.
     fullscreen_content.systemUiVisibility =
       View.SYSTEM_UI_FLAG_LOW_PROFILE or
       View.SYSTEM_UI_FLAG_FULLSCREEN or
@@ -72,9 +47,8 @@ class FullscreenActivity : AppCompatActivity() {
       View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
   }
   private val showPart2Runnable = Runnable {
-    // Delayed display of UI elements
     supportActionBar?.show()
-    floating_action_button.visibility = View.VISIBLE
+    fullscreen_fab.visibility = View.VISIBLE
   }
   private var activityIsVisible: Boolean = false
   private var boundService: BoundService? = null
@@ -105,27 +79,18 @@ class FullscreenActivity : AppCompatActivity() {
 
   override fun onStart() {
     super.onStart()
-    bindService(BoundService.newIntent(this), serviceConnection, BIND_AUTO_CREATE)
+    bindBoundService()
     "$TAG onStart".showToast(this)
   }
 
   override fun onStop() {
     super.onStop()
-    boundService?.let { unbindService(serviceConnection); boundService = null }
+    unbindBoundService()
     "$TAG onStop".showToast(this)
-  }
-
-  private fun destroyForegroundServiceIfNeed() {
-    if (intent.hasExtra(EXTRA_CLOSE_FOREGROUND_SERVICE)) {
-      stopService(ForegroundService.newIntent(this))
-    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
-    // Trigger the initial hide() shortly after the activity has been
-    // created, to briefly hint to the user that UI controls
-    // are available.
     delayedHide(100)
   }
 
@@ -152,16 +117,16 @@ class FullscreenActivity : AppCompatActivity() {
         }.show()
       }
       .apply {
-        floating_action_button.addBuilder(this)
+        fullscreen_fab.addBuilder(this)
       }
   }
 
   private fun initRxServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
-    view.fullscreen_start_rx_service_button.setOnClickListener {
+    view.start_rx_service_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       startService(rxServiceIntent)
     }
-    view.fullscreen_stop_rx_service_button.setOnClickListener {
+    view.stop_rx_service_button.setOnClickListener {
       stopService(rxServiceIntent).also {
         bottomSheetDialog.dismiss()
         "Rx service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
@@ -173,15 +138,15 @@ class FullscreenActivity : AppCompatActivity() {
     val handlerWithLoopServiceIntent = TimerHandlerService.newIntent(this, true)
     val handlerNormalServiceIntent = TimerHandlerService.newIntent(this, false)
 
-    view.fullscreen_start_handler_service_with_loop_button.setOnClickListener {
+    view.start_handler_service_with_loop_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       startService(handlerWithLoopServiceIntent)
     }
-    view.fullscreen_start_handler_service_normal_button.setOnClickListener {
+    view.start_handler_service_normal_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       startService(handlerNormalServiceIntent)
     }
-    view.fullscreen_stop_handler_service_button.setOnClickListener {
+    view.stop_handler_service_button.setOnClickListener {
       stopService(handlerWithLoopServiceIntent).also {
         bottomSheetDialog.dismiss()
         "Handler service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
@@ -190,7 +155,7 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
   private fun initForegroundWrongServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, rxServiceIntent: Intent) {
-    view.fullscreen_start_foreground_wrong_service_button.setOnClickListener {
+    view.start_foreground_wrong_service_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startForegroundService(rxServiceIntent)
@@ -198,7 +163,7 @@ class FullscreenActivity : AppCompatActivity() {
         startService(rxServiceIntent)
       }
     }
-    view.fullscreen_stop_foreground_wrong_service_button.setOnClickListener {
+    view.stop_foreground_wrong_service_button.setOnClickListener {
       stopService(rxServiceIntent).also {
         bottomSheetDialog.dismiss()
         "Foreground wrong rx service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
@@ -207,7 +172,7 @@ class FullscreenActivity : AppCompatActivity() {
   }
 
   private fun initForegroundCorrectServiceViews(view: View, bottomSheetDialog: BottomSheetDialog, foregroundServiceIntent: Intent) {
-    view.fullscreen_start_foreground_correct_service_button.setOnClickListener {
+    view.start_foreground_correct_service_button.setOnClickListener {
       bottomSheetDialog.dismiss()
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startForegroundService(foregroundServiceIntent)
@@ -215,7 +180,7 @@ class FullscreenActivity : AppCompatActivity() {
         startService(foregroundServiceIntent)
       }
     }
-    view.fullscreen_stop_foreground_correct_service_button.setOnClickListener {
+    view.stop_foreground_correct_service_button.setOnClickListener {
       stopService(foregroundServiceIntent).also {
         bottomSheetDialog.dismiss()
         "Handler service was stopped: $it".showSnack(this@FullscreenActivity.fullscreen_container)
@@ -229,11 +194,27 @@ class FullscreenActivity : AppCompatActivity() {
       .normalImageRes(R.drawable.ic_broken_image_24dp)
       .imagePadding(Rect(40, 40, 40, 40))
       .listener {
-        boundService?.message?.showSnack(fullscreen_container)
-          ?: "Problem with showing message".showToast(this)
+        BottomSheetDialog(this).apply dialog@{
+          val manageStartedServiceView = layoutInflater.inflate(R.layout.layout_bound_service, null).apply dialogView@{
+            bind_bound_service_button.setOnClickListener {
+              this@dialog.dismiss()
+              bindBoundService()
+            }
+            unbind_bound_service_button.setOnClickListener {
+              this@dialog.dismiss()
+              unbindBoundService()
+            }
+            show_message_from_bound_service_button.setOnClickListener {
+              this@dialog.dismiss()
+              boundService?.message?.showSnack(this@FullscreenActivity.fullscreen_container)
+                ?: "Problem with showing message".showToast(this@FullscreenActivity)
+            }
+          }
+          setContentView(manageStartedServiceView)
+        }.show()
       }
       .apply {
-        floating_action_button.addBuilder(this)
+        fullscreen_fab.addBuilder(this)
       }
   }
 
@@ -246,7 +227,7 @@ class FullscreenActivity : AppCompatActivity() {
         "TODO: Show Scheduled services manager".showSnack(fullscreen_container)
       }
       .apply {
-        floating_action_button.addBuilder(this)
+        fullscreen_fab.addBuilder(this)
       }
   }
 
@@ -254,8 +235,8 @@ class FullscreenActivity : AppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
     activityIsVisible = true
     fullscreen_content.setOnClickListener { toggleControls() }
-    floating_action_button.piecePlaceEnum = PiecePlaceEnum.HAM_4
-    floating_action_button.buttonPlaceEnum = ButtonPlaceEnum.HAM_4
+    fullscreen_fab.piecePlaceEnum = PiecePlaceEnum.HAM_4
+    fullscreen_fab.buttonPlaceEnum = ButtonPlaceEnum.HAM_4
   }
 
   private fun initKillProcessViews() {
@@ -267,8 +248,22 @@ class FullscreenActivity : AppCompatActivity() {
         Process.killProcess(Process.myPid())
       }
       .apply {
-        floating_action_button.addBuilder(this)
+        fullscreen_fab.addBuilder(this)
       }
+  }
+
+  private fun destroyForegroundServiceIfNeed() {
+    if (intent.hasExtra(EXTRA_CLOSE_FOREGROUND_SERVICE)) {
+      stopService(ForegroundService.newIntent(this))
+    }
+  }
+
+  private fun bindBoundService() {
+    bindService(BoundService.newIntent(this), serviceConnection, BIND_AUTO_CREATE)
+  }
+
+  private fun unbindBoundService() {
+    boundService?.let { unbindService(serviceConnection); boundService = null }
   }
   //endregion
 
@@ -284,7 +279,7 @@ class FullscreenActivity : AppCompatActivity() {
   private fun hide() {
     // Hide UI first
     supportActionBar?.hide()
-    floating_action_button.visibility = View.GONE
+    fullscreen_fab.visibility = View.GONE
     activityIsVisible = false
 
     // Schedule a runnable to remove the status and navigation bar after a delay

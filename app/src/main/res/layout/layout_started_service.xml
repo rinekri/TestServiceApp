@@ -27,7 +27,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fullscreen_start_rx_service_button"
+            android:id="@+id/start_rx_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -41,7 +41,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fullscreen_stop_rx_service_button"
+            android:id="@+id/stop_rx_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -82,9 +82,9 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fullscreen_start_handler_service_with_loop_button"
+            android:id="@+id/start_handler_service_with_loop_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?selectableItemBackground"
             android:gravity="center"
@@ -96,9 +96,9 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fullscreen_start_handler_service_normal_button"
+            android:id="@+id/start_handler_service_normal_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?selectableItemBackground"
             android:gravity="center"
@@ -110,9 +110,9 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fullscreen_stop_handler_service_button"
+            android:id="@+id/stop_handler_service_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?selectableItemBackground"
             android:gravity="center"
@@ -151,7 +151,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fullscreen_start_foreground_wrong_service_button"
+            android:id="@+id/start_foreground_wrong_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -165,7 +165,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fullscreen_stop_foreground_wrong_service_button"
+            android:id="@+id/stop_foreground_wrong_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -185,7 +185,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fullscreen_start_foreground_correct_service_button"
+            android:id="@+id/start_foreground_correct_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -199,7 +199,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fullscreen_stop_foreground_correct_service_button"
+            android:id="@+id/stop_foreground_correct_service_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

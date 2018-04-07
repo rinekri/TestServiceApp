@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 class TimerRxService : Service() {
   companion object {
     private const val TAG = "TimerRxService"
+    private const val TOP_PERIOD = 2L
 
     fun newIntent(context: Context) = Intent(context, TimerRxService::class.java)
   }
@@ -34,13 +35,13 @@ class TimerRxService : Service() {
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     Log.e(TAG, "onStartCommand")
 
-    Observable.interval(1, TimeUnit.SECONDS)
+    Observable.interval(TOP_PERIOD, TimeUnit.SECONDS)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { second ->
-        val msg = if (second == 0L) {
+      .subscribe { period ->
+        val msg = if (period == 0L) {
           "$TAG $startId: invoked"
         } else {
-          "$TAG $startId: $second seconds elapsed"
+          "$TAG $startId: ${period * TOP_PERIOD} seconds elapsed"
         }
         msg.showToast(applicationContext)
         Log.e(TAG, msg)
