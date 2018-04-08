@@ -5,7 +5,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import ru.rinekri.servicetest.broadcasts.StartRxServiceBroadcastReceiver
 
-
+/**
+ * Как отправлять data-сообщения, см папку postman в проекте
+ */
 class MyFirebaseMessagingService : FirebaseMessagingService() {
   companion object {
     private const val TAG = "MyFirebaseMessagingService"
@@ -24,6 +26,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     // jobScheduler.schedule(TimerRxJobService.newJobInfo(applicationContext))
 
     //
-     sendBroadcast(StartRxServiceBroadcastReceiver.newExplicitIntent(applicationContext))
+    sendBroadcast(StartRxServiceBroadcastReceiver.newExplicitIntent(applicationContext))
   }
 }
