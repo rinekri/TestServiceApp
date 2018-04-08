@@ -54,6 +54,10 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".broadcasts.StartRxServiceBroadcastReceiver"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

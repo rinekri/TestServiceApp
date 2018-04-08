@@ -18,6 +18,7 @@ import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 import kotlinx.android.synthetic.main.layout_bound_service.view.*
 import kotlinx.android.synthetic.main.layout_started_service.view.*
+import ru.rinekri.servicetest.broadcasts.StartRxServiceBroadcastReceiver
 import ru.rinekri.servicetest.services.BoundService
 import ru.rinekri.servicetest.services.ForegroundRxService
 import ru.rinekri.servicetest.services.TimerHandlerService
@@ -78,6 +79,7 @@ class FullscreenActivity : AppCompatActivity() {
     initManageStartedServicesViews()
     initManageBoundServicesViews()
     initManageScheduledServicesViews()
+    initSendBroadcastViews()
     initKillProcessViews()
     destroyForegroundServiceIfNeed()
     FirebaseMessaging.getInstance().subscribeToTopic("all");
@@ -241,6 +243,19 @@ class FullscreenActivity : AppCompatActivity() {
       }
   }
 
+  private fun initSendBroadcastViews() {
+    HamButton.Builder()
+      .normalTextRes(R.string.send_wrong_broadcast)
+      .normalImageRes(R.drawable.ic_call_missed_24dp)
+      .imagePadding(Rect(40, 40, 40, 40))
+      .listener {
+        sendBroadcast(StartRxServiceBroadcastReceiver.newExplicitIntent(this))
+      }
+      .apply {
+        fullscreen_fab.addBuilder(this)
+      }
+  }
+
   private fun initManageScheduledServicesViews() {
     HamButton.Builder()
       .normalTextRes(R.string.manage_scheduled_service_title)
@@ -258,8 +273,8 @@ class FullscreenActivity : AppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(false)
     activityIsVisible = true
     fullscreen_content.setOnClickListener { toggleControls() }
-    fullscreen_fab.piecePlaceEnum = PiecePlaceEnum.HAM_4
-    fullscreen_fab.buttonPlaceEnum = ButtonPlaceEnum.HAM_4
+    fullscreen_fab.piecePlaceEnum = PiecePlaceEnum.HAM_5
+    fullscreen_fab.buttonPlaceEnum = ButtonPlaceEnum.HAM_5
   }
 
   private fun initKillProcessViews() {

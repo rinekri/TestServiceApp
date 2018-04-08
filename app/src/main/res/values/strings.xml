@@ -6,6 +6,7 @@
     <string name="manage_scheduled_service_title">Manage SCHEDULED service</string>
 
     <string name="rx_service_title">Rx background service</string>
+    <string name="send_wrong_broadcast">Send wrong broadcast</string>
     <string name="handler_service_title">Handler background service</string>
     <string name="foreground_service_title">Foreground service</string>
     <string name="foreground_and_wrong_background_service_title">Background + background</string>

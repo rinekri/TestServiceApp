@@ -1,11 +1,9 @@
 package ru.rinekri.servicetest.fcm
 
-import android.app.job.JobScheduler
-import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import ru.rinekri.servicetest.services.TimerRxJobService
+import ru.rinekri.servicetest.broadcasts.StartRxServiceBroadcastReceiver
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -18,11 +16,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     // NOTE: Если убрать комментарий и отправить из MW или Postman'a пуш с normal-priority сообщением,
     // то приложение упадет с исключением IllegalStateException.
     // Исправляется использованием Job'ов или вызовом startForegroundService
-    // startService(TimerRxService.newIntent(applicationContext, true))
-    // startForegroundService(TimerRxService.newIntent(applicationContext, true))
+    // startService(TimerRxService.newExplicitIntent(applicationContext, true))
+    // startForegroundService(TimerRxService.newExplicitIntent(applicationContext, true))
 
-    //Один из вариантов решения проблемы с сервисами
-    val jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-    jobScheduler.schedule(TimerRxJobService.newJobInfo(applicationContext))
+    // Один из вариантов решения проблемы с сервисами
+    // val jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+    // jobScheduler.schedule(TimerRxJobService.newJobInfo(applicationContext))
+
+    //
+     sendBroadcast(StartRxServiceBroadcastReceiver.newExplicitIntent(applicationContext))
   }
 }
